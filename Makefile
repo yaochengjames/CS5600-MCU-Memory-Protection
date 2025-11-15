@@ -8,7 +8,7 @@ SIZE    := arm-none-eabi-size
 BUILD_DIR := build
 SRC_DIR   := src
 FREERTOS_DIR := freertos/FreeRTOS-Kernel
-PORTABLE_DIR := freertos/portable
+PORTABLE_DIR := $(FREERTOS_DIR)/portable/GCC/ARM_CM4F
 
 # ==== Sources ====
 SRCS := \
@@ -21,7 +21,7 @@ SRCS := \
     $(FREERTOS_DIR)/event_groups.c \
     $(FREERTOS_DIR)/stream_buffer.c \
     $(FREERTOS_DIR)/portable/MemMang/heap_4.c \
-    $(PORTABLE_DIR)/GCC/ARM_CM4F/port.c
+    $(PORTABLE_DIR)/port.c
 
 # ==== Output ====
 ELF := $(BUILD_DIR)/freertos.elf
@@ -31,9 +31,9 @@ MAP := $(BUILD_DIR)/freertos.map
 # ==== Flags ====
 CFLAGS := -mcpu=cortex-m4 -mthumb -O2 -Wall \
           -ffreestanding \
-          -I./freertos \
+		  -Ifreertos \
           -I$(FREERTOS_DIR)/include \
-          -I$(PORTABLE_DIR)/GCC/ARM_CM4F \
+          -I$(PORTABLE_DIR) \
           -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 
 LDFLAGS := -T link.ld -Wl,--gc-sections -Wl,-Map=$(MAP)
