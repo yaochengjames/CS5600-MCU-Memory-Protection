@@ -31,14 +31,14 @@ MAP := $(BUILD_DIR)/freertos.map
 # ==== Flags ====
 CFLAGS := -mcpu=cortex-m4 -mthumb -O2 -Wall \
           -ffreestanding \
-		  -Ifreertos \
+          -Ifreertos \
           -I$(FREERTOS_DIR)/include \
           -I$(PORTABLE_DIR) \
           -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 
 LDFLAGS := -T link.ld -Wl,--gc-sections -Wl,-Map=$(MAP)
 
-LIBS := -lc -lm -lnosys
+LIBS :=  # <<< IMPORTANT: do NOT link libc
 
 # ==== Rules ====
 .PHONY: all clean run dump
@@ -54,14 +54,13 @@ $(ELF): $(SRCS) | $(BUILD_DIR)
 	$(SIZE) $@
 
 $(BIN): $(ELF)
-	@echo "=== Generating BIN ==="
 	$(OBJCOPY) -O binary $(ELF) $(BIN)
 
 dump: $(ELF)
 	$(OBJDUMP) -d -S $(ELF) > $(BUILD_DIR)/freertos.disasm
 
 run: $(ELF)
-	qemu-system-arm -M mps2-an386 -kernel $(ELF) -nographic
+	qemu-system-arm -M mps2-an386 -kernel $(ELF) -serial stdio -monitor none -nographic
 
 clean:
 	rm -rf $(BUILD_DIR)
