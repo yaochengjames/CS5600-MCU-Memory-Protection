@@ -8,3 +8,5 @@ build/
 
 
 
+# Experiment results
+results/*.log
