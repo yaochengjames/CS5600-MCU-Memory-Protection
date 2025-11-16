@@ -1,0 +1,33 @@
+qemu-system-arm -M mps2-an386 -kernel build/freertos_baseline.elf -serial stdio -monitor none -nographic
+
+=====================================
+  Baseline Configuration (No MPU)   
+=====================================
+CPU: ARM Cortex-M4 @ 50MHz
+RTOS: FreeRTOS
+Platform: QEMU MPS2-AN386
+=====================================
+
+Starting scheduler...
+
+[Baseline] Switches: 100, Avg: 1342415 cycles
+[Baseline] Switches: 200, Avg: 1342289 cycles
+[Baseline] Switches: 300, Avg: 1398132 cycles
+[Baseline] Switches: 400, Avg: 1468040 cycles
+[Baseline] Switches: 500, Avg: 1476407 cycles
+[Baseline] Switches: 600, Avg: 1481991 cycles
+[Baseline] Switches: 700, Avg: 1485976 cycles
+[Baseline] Switches: 800, Avg: 1488974 cycles
+[Baseline] Switches: 900, Avg: 1509924 cycles
+[Baseline] Switches: 1000, Avg: 1509915 cycles
+
+=== Performance Statistics ===
+Total switches: 1000
+Average cycles: 1509915
+Min cycles: 650
+Max cycles: 16774815
+At 50MHz: ~30198 us per switch
+==============================
+
+=== Baseline measurement complete ===
+qemu-system-arm: terminating on signal 2 from pid 30715 (<unknown process>)
