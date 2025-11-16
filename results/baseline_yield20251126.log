@@ -1,0 +1,38 @@
+qemu-system-arm -M mps2-an386 -kernel build/freertos_baseline.elf -serial stdio -monitor none -nographic
+
+=====================================
+  Baseline Configuration (No MPU)   
+=====================================
+CPU: ARM Cortex-M4 @ 50MHz
+RTOS: FreeRTOS
+Platform: QEMU MPS2-AN386
+=====================================
+
+Starting scheduler...
+
+[Baseline] Switches: 500, Avg: 55 cycles
+[Baseline] Switches: 500, Avg: 55 cycles
+[Baseline] Switches: 500, Avg: 55 cycles
+[Baseline] Switches: 500, Avg: 55 cycles
+[Baseline] Switches: 500, Avg: 55 cycles
+[Baseline] Switches: 500, Avg: 55 cycles
+[Baseline] Switches: 500, Avg: 55 cycles
+[Baseline] Switches: 500, Avg: 55 cycles
+[Baseline] Switches: 500, Avg: 55 cycles
+[Baseline] Switches: 1000, Avg: 73 cycles
+[Baseline] Switches: 1500, Avg: 78 cycles
+[Baseline] Switches: 2000, Avg: 81 cycles
+[Baseline] Switches: 2500, Avg: 83 cycles
+[Baseline] Switches: 3000, Avg: 83 cycles
+
+=== Performance Statistics ===
+Configuration: Baseline
+Total switches: 3000
+Average cycles: 83
+Min cycles: 24
+Max cycles: 1750
+Range: 1726 cycles
+At 50MHz: ~1 us per switch
+==============================
+
+=== Baseline measurement complete ===

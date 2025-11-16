@@ -1,0 +1,49 @@
+qemu-system-arm -M mps2-an386 -kernel build/freertos_static.elf -serial stdio -monitor none -nographic
+
+=====================================
+  Static MPU Configuration          
+=====================================
+CPU: ARM Cortex-M4 @ 50MHz
+RTOS: FreeRTOS
+Platform: QEMU MPS2-AN386
+=====================================
+
+[MPU] Initializing Static MPU configuration...
+[MPU] Configured 3 regions:
+  Region 0: Flash   [0x00000000-0x00200000] R+X
+  Region 1: SRAM    [0x20000000-0x20080000] R+W
+  Region 2: Periph  [0x40000000-0x50000000] R+W
+[MPU] MPU enabled
+
+[MPU] Static Configuration Summary:
+  Regions configured: 3
+  Total accessible memory: ~2.5 MB
+  Memory reduction: 0%
+  Note: Same config for all tasks
+
+Starting scheduler...
+
+[Static] Switches: 500, Avg: 60 cycles
+[Static] Switches: 500, Avg: 60 cycles
+[Static] Switches: 500, Avg: 60 cycles
+[Static] Switches: 500, Avg: 60 cycles
+[Static] Switches: 500, Avg: 60 cycles
+[Static] Switches: 500, Avg: 60 cycles
+[Static] Switches: 500, Avg: 60 cycles
+[Static] Switches: 1000, Avg: 85 cycles
+[Static] Switches: 1500, Avg: 89 cycles
+[Static] Switches: 2000, Avg: 91 cycles
+[Static] Switches: 2500, Avg: 91 cycles
+[Static] Switches: 3000, Avg: 91 cycles
+
+=== Performance Statistics ===
+Configuration: Static
+Total switches: 3000
+Average cycles: 91
+Min cycles: 24
+Max cycles: 150
+Range: 126 cycles
+At 50MHz: ~1 us per switch
+==============================
+
+=== Static measurement complete ===
