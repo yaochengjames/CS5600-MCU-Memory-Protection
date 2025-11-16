@@ -91,7 +91,7 @@ void mpu_static_print_config(void)
     
     uart_print("\n[MPU] Hardware Information:\n");
     uart_printf("  Available regions: %lu\n", num_regions);
-    uart_printf("  MPU TYPE register: 0x%lx\n", type);
+    //uart_printf("  MPU TYPE register: 0x%lx\n", type);
     
     uart_print("\n[MPU] Static Configuration:\n");
     uart_print("  Total accessible memory: ~2.5 MB\n");
