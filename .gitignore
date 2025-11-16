@@ -7,6 +7,3 @@ build/
 .DS_Store
 
 
-
-# Experiment results
-results/*.log
