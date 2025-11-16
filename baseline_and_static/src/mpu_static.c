@@ -10,45 +10,41 @@
 
 // MPU Control bits
 #define MPU_CTRL_ENABLE       (1 << 0)
-#define MPU_CTRL_PRIVDEFENA   (1 << 2)  // Enable default memory map
+#define MPU_CTRL_PRIVDEFENA   (1 << 2)
 
 // Region attributes (from Composite paper §II-B)
 #define MPU_REGION_ENABLE     (1 << 0)
-#define MPU_REGION_SIZE(n)    ((n) << 1)  // Size = 2^(n+1) bytes
+#define MPU_REGION_SIZE(n)    ((n) << 1)
 
 // Access permissions (AP bits)
-#define MPU_AP_PRIV_RW_USER_NO   (1 << 24)  // Privileged R/W, User none
-#define MPU_AP_PRIV_RW_USER_RW   (3 << 24)  // Full access
-#define MPU_AP_PRIV_RO_USER_NO   (5 << 24)  // Privileged RO
-#define MPU_AP_PRIV_RO_USER_RO   (6 << 24)  // Read-only
+#define MPU_AP_PRIV_RW_USER_NO   (1 << 24)
+#define MPU_AP_PRIV_RW_USER_RW   (3 << 24)
+#define MPU_AP_PRIV_RO_USER_NO   (5 << 24)
+#define MPU_AP_PRIV_RO_USER_RO   (6 << 24)
 
 // Execute Never bit
 #define MPU_XN                (1 << 28)
 
-// Region sizes (Size = 2^(n+1))
-// For n=20: size = 2^21 = 2MB
-// For n=18: size = 2^19 = 512KB
+// Region sizes
 #define MPU_SIZE_2MB      20
 #define MPU_SIZE_512KB    18
 #define MPU_SIZE_256KB    17
+
+// MPU fault counter
+static volatile uint32_t mpu_fault_count = 0;
 
 void mpu_static_init(void)
 {
     uart_print("[MPU] Initializing Static MPU configuration...\n");
     
-    // Disable MPU first
     MPU_CTRL = 0;
     
-    // Region 0: Flash (0x00000000 - 0x00200000, 2MB)
-    // Read-only, Executable
     MPU_RNR = 0;
     MPU_RBAR = 0x00000000;
     MPU_RASR = MPU_REGION_ENABLE | 
                MPU_REGION_SIZE(MPU_SIZE_2MB) |
                MPU_AP_PRIV_RO_USER_RO;
     
-    // Region 1: SRAM (0x20000000 - 0x20080000, 512KB)
-    // Read-write, Non-executable
     MPU_RNR = 1;
     MPU_RBAR = 0x20000000;
     MPU_RASR = MPU_REGION_ENABLE | 
@@ -56,12 +52,10 @@ void mpu_static_init(void)
                MPU_AP_PRIV_RW_USER_RW |
                MPU_XN;
     
-    // Region 2: Peripherals (0x40000000 - 0x50000000, 256MB)
-    // Read-write, Non-executable
     MPU_RNR = 2;
     MPU_RBAR = 0x40000000;
     MPU_RASR = MPU_REGION_ENABLE | 
-               MPU_REGION_SIZE(27) |  // 2^28 = 256MB
+               MPU_REGION_SIZE(27) |
                MPU_AP_PRIV_RW_USER_RW |
                MPU_XN;
     
@@ -73,7 +67,6 @@ void mpu_static_init(void)
 
 void mpu_static_enable(void)
 {
-    // Enable MPU with default memory map for privileged access
     MPU_CTRL = MPU_CTRL_ENABLE | MPU_CTRL_PRIVDEFENA;
     uart_print("[MPU] MPU enabled\n");
 }
@@ -91,4 +84,30 @@ void mpu_static_print_config(void)
     uart_print("  Total accessible memory: ~2.5 MB\n");
     uart_print("  Memory reduction: 0%\n");
     uart_print("  Note: Same config for all tasks\n");
+}
+
+void MemManage_Handler(void)
+{
+    mpu_fault_count++;
+    
+    uart_print("\n");
+    uart_print("========================================\n");
+    uart_print("!!! MPU FAULT DETECTED !!!\n");
+    uart_print("========================================\n");
+    uart_print("Fault count: ");
+    uart_printf("%lu\n", mpu_fault_count);
+    uart_print("\n");
+    uart_print("[TEST] *** SUCCESS: MPU is working! ***\n");
+    uart_print("[TEST] Illegal memory access was blocked\n");
+    uart_print("[TEST] System halting as expected\n");
+    uart_print("\n");
+    uart_print("Press Ctrl+C to exit QEMU\n");
+    uart_print("========================================\n");
+    
+    for (;;);
+}
+
+uint32_t mpu_get_fault_count(void)
+{
+    return mpu_fault_count;
 }
