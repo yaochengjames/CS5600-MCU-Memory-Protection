@@ -85,16 +85,10 @@ void mpu_static_disable(void)
 }
 
 void mpu_static_print_config(void)
-{
-    uint32_t type = MPU_TYPE;
-    uint32_t num_regions = (type >> 8) & 0xFF;
-    
-    uart_print("\n[MPU] Hardware Information:\n");
-    uart_printf("  Available regions: %lu\n", num_regions);
-    //uart_printf("  MPU TYPE register: 0x%lx\n", type);
-    
-    uart_print("\n[MPU] Static Configuration:\n");
+{   
+    uart_print("\n[MPU] Static Configuration Summary:\n");
+    uart_print("  Regions configured: 3\n");
     uart_print("  Total accessible memory: ~2.5 MB\n");
-    uart_print("  Memory reduction: 0% (same for all tasks)\n");
-    uart_print("  Isolation level: Coarse-grained\n");
+    uart_print("  Memory reduction: 0%\n");
+    uart_print("  Note: Same config for all tasks\n");
 }
