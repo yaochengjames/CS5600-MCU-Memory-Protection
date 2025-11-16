@@ -30,8 +30,31 @@
 #define MPU_SIZE_512KB    18
 #define MPU_SIZE_256KB    17
 
+// UART registers for direct access in fault handler
+#define UART0_DATA_REG   (*(volatile uint32_t*)0x40004000)
+#define UART0_STATE_REG  (*(volatile uint32_t*)0x40004004)
+#define UART_TX_BUSY     (1 << 0)
+
 // MPU fault counter
 static volatile uint32_t mpu_fault_count = 0;
+
+// Simplified UART for fault handler (no dependencies)
+static void fault_putc(char c)
+{
+    while (UART0_STATE_REG & UART_TX_BUSY);
+    UART0_DATA_REG = c;
+}
+
+static void fault_print(const char *s)
+{
+    while (*s) {
+        if (*s == '\n') {
+            fault_putc('\r');
+        }
+        fault_putc(*s);
+        s++;
+    }
+}
 
 void mpu_static_init(void)
 {
@@ -90,21 +113,28 @@ void MemManage_Handler(void)
 {
     mpu_fault_count++;
     
-    uart_print("\n");
-    uart_print("========================================\n");
-    uart_print("!!! MPU FAULT DETECTED !!!\n");
-    uart_print("========================================\n");
-    uart_print("Fault count: ");
-    uart_printf("%lu\n", mpu_fault_count);
-    uart_print("\n");
-    uart_print("[TEST] *** SUCCESS: MPU is working! ***\n");
-    uart_print("[TEST] Illegal memory access was blocked\n");
-    uart_print("[TEST] System halting as expected\n");
-    uart_print("\n");
-    uart_print("Press Ctrl+C to exit QEMU\n");
-    uart_print("========================================\n");
+    // Use simplified UART to avoid any dependencies
+    fault_print("\n\n");
+    fault_print("========================================\n");
+    fault_print("!!! MPU FAULT DETECTED !!!\n");
+    fault_print("========================================\n");
+    fault_print("\n");
+    fault_print("[SUCCESS] MPU is working in QEMU!\n");
+    fault_print("[SUCCESS] Illegal access was BLOCKED\n");
+    fault_print("[SUCCESS] Fault occurred at execution\n");
+    fault_print("\n");
+    fault_print("This proves:\n");
+    fault_print("- MPU configuration is active\n");
+    fault_print("- Fault detection is functional\n");
+    fault_print("- Memory protection is enforced\n");
+    fault_print("\n");
+    fault_print("System halted. Press Ctrl+C to exit.\n");
+    fault_print("========================================\n");
     
-    for (;;);
+    // Infinite loop
+    while (1) {
+        // Halt
+    }
 }
 
 uint32_t mpu_get_fault_count(void)
