@@ -44,7 +44,7 @@ CFLAGS := -mcpu=cortex-m4 -mthumb -O2 -Wall \
           -mfpu=fpv4-sp-d16 -mfloat-abi=hard \
           -DCONFIG_$(shell echo $(CONFIG) | tr a-z A-Z)
 
-LDFLAGS := -T link.ld -Wl,--gc-sections -Wl,-Map=$(MAP) --specs=nosys.sepecs
+LDFLAGS := -T link.ld -Wl,--gc-sections -Wl,-Map=$(MAP) --specs=nosys.specs
 
 # ==== Rules ====
 .PHONY: all clean run dump
