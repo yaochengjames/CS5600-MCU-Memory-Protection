@@ -28,6 +28,10 @@ SRCS := \
     $(FREERTOS_DIR)/stream_buffer.c \
     $(FREERTOS_DIR)/portable/MemMang/heap_4.c \
     $(PORTABLE_DIR)/port.c
+# MPU sources based on configuration
+ifeq ($(CONFIG),static)
+    SRCS += $(SRC_DIR)/mpu_static.c
+endif
 
 # ==== Output ====
 ELF := $(BUILD_DIR)/freertos_$(CONFIG).elf
