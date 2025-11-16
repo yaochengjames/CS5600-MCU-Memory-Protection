@@ -1,6 +1,5 @@
 /* Linker script for QEMU MPS2-AN386 (Cortex-M4) */
 /* FLASH at 0x00000000, SRAM at 0x20000000 */
-
 ENTRY(Reset_Handler)
 
 /* QEMU MPS2: 2MB Flash, 512KB RAM */
@@ -68,5 +67,17 @@ SECTIONS
     . = ALIGN(4);
     _ebss = .;
   } > RAM
-}
 
+  /* Heap for malloc (required by newlib) */
+  .heap (NOLOAD) :
+  {
+    . = ALIGN(8);
+    end = .;
+    _end = .;
+    __end__ = .;
+    PROVIDE(end = .);
+    . = . + 0x1000;  /* 4KB heap */
+    . = ALIGN(8);
+    _heap_end = .;
+  } > RAM
+}
