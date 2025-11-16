@@ -5,34 +5,48 @@
 #include "benchmark.h"
 
 #define NUM_SAMPLES 1000
+#define SYSTICK_MAX 0x00FFFFFF
 
 static volatile uint32_t switch_count = 0;
 static volatile uint64_t total_cycles = 0;
 static volatile uint32_t min_cycles = 0xFFFFFFFF;
 static volatile uint32_t max_cycles = 0;
 
+static uint32_t prev_cycles = 0;
+static uint64_t total_ticks = 0;
+
 void TaskA(void *pvParameters)
 {
     (void)pvParameters;
-    uint32_t start, elapsed;
+    uint32_t current, elapsed;
     
     for (;;) {
-        start = benchmark_get_cycles();
+        current = benchmark_get_cycles();
         
         // Force context switch
         vTaskDelay(pdMS_TO_TICKS(10));
         
-        elapsed = benchmark_get_cycles() - start;
+        // Calculate elapsed time, handling wrap-around
+        uint32_t after = benchmark_get_cycles();
+        
+        if (after >= current) {
+            elapsed = after - current;
+        } else {
+            // Wrap-around occurred
+            elapsed = (SYSTICK_MAX - current) + after;
+        }
         
         // Update statistics
-        total_cycles += elapsed;
-        switch_count++;
-        
-        if (elapsed < min_cycles) min_cycles = elapsed;
-        if (elapsed > max_cycles) max_cycles = elapsed;
+        if (elapsed > 0) {  // Ignore first measurement
+            total_cycles += elapsed;
+            switch_count++;
+            
+            if (elapsed < min_cycles) min_cycles = elapsed;
+            if (elapsed > max_cycles) max_cycles = elapsed;
+        }
         
         // Print progress every 100 switches
-        if (switch_count % 100 == 0) {
+        if (switch_count > 0 && switch_count % 100 == 0) {
             uart_printf("[Baseline] Switches: %lu, Avg: %lu cycles\n", 
                        switch_count, 
                        (uint32_t)(total_cycles / switch_count));
@@ -68,5 +82,7 @@ void test_print_statistics(void)
     uart_printf("Average cycles: %lu\n", (uint32_t)(total_cycles / switch_count));
     uart_printf("Min cycles: %lu\n", min_cycles);
     uart_printf("Max cycles: %lu\n", max_cycles);
+    uart_printf("At 50MHz: ~%lu us per switch\n", 
+               (uint32_t)((total_cycles / switch_count) / 50));
     uart_print("==============================\n");
 }
