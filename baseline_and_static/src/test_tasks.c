@@ -92,42 +92,30 @@ void TaskB(void *pvParameters)
 void TaskViolator(void *pvParameters)
 {
     (void)pvParameters;
-    
-    // Wait for TaskA to complete measurement
+
     while (switch_count < NUM_SAMPLES) {
         vTaskDelay(pdMS_TO_TICKS(100));
     }
-    
-    // Wait additional 1 second for results to print
+
     vTaskDelay(pdMS_TO_TICKS(1000));
-    
-    uart_print("\n");
-    uart_print("========================================\n");
+
+    uart_print("\n========================================\n");
     uart_print("       MPU Fault Detection Test         \n");
     uart_print("========================================\n");
-    uart_print("[TEST] Attempting illegal memory access\n");
-    uart_print("[TEST] Target: 0x60000000 (unmapped region)\n");
-    uart_print("[TEST] \n");
-    uart_print("[TEST] Expected behavior:\n");
-    uart_print("[TEST]   - If MPU works: System halts with fault\n");
-    uart_print("[TEST]   - If MPU disabled: Access succeeds\n");
-    uart_print("[TEST] \n");
-    uart_print("[TEST] Executing write to 0x60000000...\n");
-    
-    volatile uint32_t *illegal_addr = (uint32_t*)0x60000000;
-    *illegal_addr = 0xDEADBEEF;
-    
-    uart_print("[TEST] \n");
-    uart_print("[TEST] *** RESULT: No fault detected ***\n");
-    uart_print("[TEST] \n");
-    uart_print("[TEST] Conclusion:\n");
-    uart_print("[TEST] MPU fault detection is NOT working in QEMU\n");
-    uart_print("[TEST] This is a known QEMU MPS2-AN386 limitation\n");
-    uart_print("[TEST] \n");
-    uart_print("[TEST] Note: MPU would work on real hardware\n");
-    uart_print("========================================\n");
-    
-    // Suspend self
+
+    // Test 1: try to write into Flash,will cause MPU fault）
+    uart_print("[TEST 1] Writing to Flash (Read-only region)\n");
+    uart_print("[TEST 1] Target: 0x00100000 (Flash)\n");
+    uart_print("[TEST 1] Expected: MPU fault (write to RO region)\n");
+
+    volatile uint32_t *flash_addr = (uint32_t*)0x00100000;
+    uart_print("[TEST 1] Executing write...\n");
+    *flash_addr = 0xDEADBEEF;
+
+    uart_print("[TEST 1] ERROR: No fault detected!\n");
+    uart_print("[TEST 1] Write to read-only Flash succeeded\n");
+    uart_print("[TEST 1] MPU may not be enforcing RO permissions\n");
+
     vTaskSuspend(NULL);
 }
 
