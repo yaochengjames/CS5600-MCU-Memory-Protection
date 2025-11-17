@@ -74,3 +74,21 @@ run: $(ELF)
 
 clean:
 	rm -rf $(BUILD_DIR)
+
+# Debug with GDB
+.PHONY: debug gdb
+
+debug: $(ELF)
+	@echo "Starting QEMU with GDB server on port 1234..."
+	@echo "In another terminal, run: make gdb"
+	qemu-system-arm -M mps2-an386 -kernel $(ELF) \
+		-serial stdio -monitor none -nographic \
+		-s -S
+
+gdb: $(ELF)
+	@echo "Connecting to QEMU GDB server..."
+	arm-none-eabi-gdb $(ELF) \
+		-ex "target remote localhost:1234" \
+		-ex "layout regs" \
+		-ex "break main" \
+		-ex "continue"
