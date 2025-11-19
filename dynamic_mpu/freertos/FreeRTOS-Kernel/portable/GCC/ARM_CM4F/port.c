@@ -34,6 +34,11 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+/* Add the declaration for Dynamic MPU */
+#if defined(CONFIG_DYNAMIC)
+    extern void mpu_dynamic_switch_task(void *);
+#endif
+
 #ifndef __ARM_FP
     #error This port can only be used when the project options are configured to enable hardware floating point support.
 #endif
