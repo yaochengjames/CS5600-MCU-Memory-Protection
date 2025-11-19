@@ -25,7 +25,9 @@ int main(void)
 
     test_create_tasks();
     
-    uart_print("Starting scheduler...\n\n");
+    uart_print("Starting scheduler...\n");
+    uart_print("(MPU will reconfigure on every context switch)\n\n");
+    
     vTaskStartScheduler();
 
     uart_print("ERROR: Scheduler returned!\n");
