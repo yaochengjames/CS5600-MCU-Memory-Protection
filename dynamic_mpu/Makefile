@@ -10,9 +10,6 @@ SRC_DIR   := src
 FREERTOS_DIR := freertos/FreeRTOS-Kernel
 PORTABLE_DIR := $(FREERTOS_DIR)/portable/GCC/ARM_CM4F
 
-# ==== Configuration ====
-CONFIG ?= baseline
-
 # ==== Sources ====
 SRCS := \
     $(SRC_DIR)/main.c \
@@ -20,6 +17,7 @@ SRCS := \
     $(SRC_DIR)/uart.c \
     $(SRC_DIR)/benchmark.c \
     $(SRC_DIR)/test_tasks.c \
+    $(SRC_DIR)/mpu_dynamic.c \
     $(FREERTOS_DIR)/tasks.c \
     $(FREERTOS_DIR)/list.c \
     $(FREERTOS_DIR)/queue.c \
@@ -28,15 +26,11 @@ SRCS := \
     $(FREERTOS_DIR)/stream_buffer.c \
     $(FREERTOS_DIR)/portable/MemMang/heap_4.c \
     $(PORTABLE_DIR)/port.c
-# MPU sources based on configuration
-ifeq ($(CONFIG),static)
-    SRCS += $(SRC_DIR)/mpu_static.c
-endif
 
 # ==== Output ====
-ELF := $(BUILD_DIR)/freertos_$(CONFIG).elf
-BIN := $(BUILD_DIR)/freertos_$(CONFIG).bin
-MAP := $(BUILD_DIR)/freertos_$(CONFIG).map
+ELF := $(BUILD_DIR)/freertos_dynamic.elf
+BIN := $(BUILD_DIR)/freertos_dynamic.bin
+MAP := $(BUILD_DIR)/freertos_dynamic.map
 
 # ==== Flags ====
 CFLAGS := -mcpu=cortex-m4 -mthumb -O2 -Wall \
@@ -46,12 +40,12 @@ CFLAGS := -mcpu=cortex-m4 -mthumb -O2 -Wall \
           -I$(FREERTOS_DIR)/include \
           -I$(PORTABLE_DIR) \
           -mfpu=fpv4-sp-d16 -mfloat-abi=hard \
-          -DCONFIG_$(shell echo $(CONFIG) | tr a-z A-Z)
+          -DCONFIG_DYNAMIC
 
 LDFLAGS := -T link.ld -Wl,--gc-sections -Wl,-Map=$(MAP) --specs=nosys.specs
 
 # ==== Rules ====
-.PHONY: all clean run dump
+.PHONY: all clean run dump debug gdb
 
 all: $(ELF)
 
@@ -59,7 +53,7 @@ $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
 $(ELF): $(SRCS) | $(BUILD_DIR)
-	@echo "=== Building $(CONFIG) configuration ==="
+	@echo "=== Building Dynamic MPU configuration ==="
 	$(CC) $(CFLAGS) $(SRCS) $(LDFLAGS) -o $@
 	$(SIZE) $@
 
@@ -67,7 +61,7 @@ $(BIN): $(ELF)
 	$(OBJCOPY) -O binary $(ELF) $(BIN)
 
 dump: $(ELF)
-	$(OBJDUMP) -d -S $(ELF) > $(BUILD_DIR)/freertos_$(CONFIG).disasm
+	$(OBJDUMP) -d -S $(ELF) > $(BUILD_DIR)/freertos_dynamic.disasm
 
 run: $(ELF)
 	qemu-system-arm -M mps2-an386 -kernel $(ELF) -serial stdio -monitor none -nographic
@@ -76,19 +70,17 @@ clean:
 	rm -rf $(BUILD_DIR)
 
 # Debug with GDB
-.PHONY: debug gdb
-
 debug: $(ELF)
 	@echo "Starting QEMU with GDB server on port 1234..."
-	@echo "Configuration: $(CONFIG)"
-	@echo "In another terminal, run: make CONFIG=$(CONFIG) gdb"
+	@echo "Configuration: Dynamic MPU"
+	@echo "In another terminal, run: make gdb"
 	qemu-system-arm -M mps2-an386 -kernel $(ELF) \
 		-serial stdio -monitor none -nographic \
 		-s -S
 
 gdb: $(ELF)
 	@echo "Connecting to QEMU GDB server..."
-	@echo "Configuration: $(CONFIG)"
+	@echo "Configuration: Dynamic MPU"
 	arm-none-eabi-gdb $(ELF) \
 		-ex "target remote localhost:1234" \
 		-ex "break main" \
