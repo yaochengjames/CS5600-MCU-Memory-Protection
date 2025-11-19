@@ -80,15 +80,16 @@ clean:
 
 debug: $(ELF)
 	@echo "Starting QEMU with GDB server on port 1234..."
-	@echo "In another terminal, run: make gdb"
+	@echo "Configuration: $(CONFIG)"
+	@echo "In another terminal, run: make CONFIG=$(CONFIG) gdb"
 	qemu-system-arm -M mps2-an386 -kernel $(ELF) \
 		-serial stdio -monitor none -nographic \
 		-s -S
 
 gdb: $(ELF)
 	@echo "Connecting to QEMU GDB server..."
+	@echo "Configuration: $(CONFIG)"
 	arm-none-eabi-gdb $(ELF) \
 		-ex "target remote localhost:1234" \
-		-ex "layout regs" \
 		-ex "break main" \
 		-ex "continue"
