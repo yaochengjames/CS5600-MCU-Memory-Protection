@@ -547,6 +547,15 @@ void xPortPendSVHandler( void )
         "   msr psp, r0                         \n"
         "   isb                                 \n"
         "                                       \n"
+		// Add Dynamic MPU support
+        #if defined(CONFIG_DYNAMIC)
+        "   stmdb sp!, {r0-r3, r12, lr}         \n" /* Save registers */
+        "   ldr r3, =pxCurrentTCB               \n"
+        "   ldr r0, [r3]                        \n"
+        "   bl mpu_dynamic_switch_task          \n"
+        "   ldmia sp!, {r0-r3, r12, lr}         \n" /* Restore */
+        #endif
+
         #ifdef WORKAROUND_PMU_CM001 /* XMC4000 specific errata workaround. */
             #if WORKAROUND_PMU_CM001 == 1
                 "           push { r14 }                \n"
@@ -559,11 +568,6 @@ void xPortPendSVHandler( void )
         "   .ltorg                              \n"
         ::"i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY )
     );
-	/* Dynamic MPU: Switch memory view after context switch */
-    #if defined(CONFIG_DYNAMIC)
-        extern void *pxCurrentTCB;
-        mpu_dynamic_switch_task(pxCurrentTCB);
-    #endif
 }
 /*-----------------------------------------------------------*/
 
