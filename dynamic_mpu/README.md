@@ -1,25 +1,28 @@
-# Baseline and Static MPU Configuration
+# Dynamic MPU Configuration
 
-This directory contains implementations that use the **original FreeRTOS kernel** (unmodified).
+This directory implements **per-task memory isolation** using dynamic MPU reconfiguration.
 
-## Configurations
+## Key Difference from Static MPU
 
-### Baseline (No MPU)
-- MPU is **disabled**
-- Used to measure baseline performance
+- **Static MPU**: All tasks share the same memory view (2.5 MB)
+- **Dynamic MPU**: Each task has isolated memory view (~20-30 KB per task)
 
-Build: `make CONFIG=baseline`
+## Implementation
 
-### Static MPU
-- MPU is configured **once at boot time**
-- Memory regions never change at runtime
-- 3-4 fixed regions: Flash (code), SRAM (data), Peripherals
+- MPU is **reconfigured on every context switch**
+- Each task can only access its own code, data, stack
+- Requires modification of `port.c` in FreeRTOS kernel
 
-Build: `make CONFIG=static`
+## Modified Files
 
-## Files
+- `freertos/FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c`
+  - Added MPU switching in `xPortPendSVHandler`
+- `src/mpu_dynamic.c` - Per-task MPU configuration
+- `src/main.c` - Uses CONFIG_DYNAMIC
 
-- `src/main.c` - Main entry point (uses CONFIG macro)
-- `src/mpu_static.c` - Static MPU configuration
-- `freertos/` - Original FreeRTOS kernel (unmodified)
-
+## Build
+```bash
+make clean
+make
+make run
+```
