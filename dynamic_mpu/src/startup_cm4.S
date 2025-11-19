@@ -42,6 +42,9 @@ Default_Handler:
     .weak HardFault_Handler
     .thumb_set HardFault_Handler,Default_Handler
     
+    .weak MemManage_Handler
+    .thumb_set MemManage_Handler,Default_Handler
+    
     .weak BusFault_Handler
     .thumb_set BusFault_Handler,Default_Handler
     
