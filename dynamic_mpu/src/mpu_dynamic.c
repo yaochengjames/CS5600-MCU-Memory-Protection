@@ -29,3 +29,7 @@
 #define SIZE_16KB   13   // 2^14 = 16KB
 #define SIZE_32KB   14   // 2^15 = 32KB
 #define SIZE_512KB  18   // 2^19 = 512KB
+
+
+// MPU switch counter
+static volatile uint32_t mpu_switch_count = 0;
