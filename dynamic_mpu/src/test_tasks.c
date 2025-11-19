@@ -154,5 +154,24 @@ void test_print_statistics(void)
     uart_print("At 50MHz: ~");
     uart_printf("%lu", avg_cycles / 50);
     uart_print(" us per switch\n");
+    
+    #ifdef CONFIG_DYNAMIC
+    extern uint32_t mpu_dynamic_get_switches(void);
+    uint32_t mpu_switches = mpu_dynamic_get_switches();
+    uart_print("\n[DEBUG] MPU reconfigurations: ");
+    uart_printf("%lu\n", mpu_switches);
+    
+    if (mpu_switches == 0) {
+        uart_print("[WARNING] MPU switching NOT working!\n");
+        uart_print("[WARNING] mpu_dynamic_switch_task() was never called\n");
+    } else if (mpu_switches < switch_count) {
+        uart_print("[WARNING] Partial MPU switching (");
+        uart_printf("%lu", (mpu_switches * 100) / switch_count);
+        uart_print("%%)\n");
+    } else {
+        uart_print("[OK] MPU switching is active (100%%)\n");
+    }
+    #endif
+    
     uart_print("==============================\n");
 }
