@@ -129,6 +129,6 @@ void mpu_dynamic_print_config(void)
     uart_print("  TaskA: 32KB Flash + 512KB SRAM + 4KB UART = ~548 KB\n");
     uart_print("  TaskB: 16KB Flash + 512KB SRAM + 4KB UART = ~532 KB\n");
     uart_print("  Memory reduction: ~78% per task (vs 2.5 MB baseline)\n");
-    uart_print("  Total MPU switches: ");
-    uart_printf("%lu\n", mpu_switch_count);
+   //uart_print("  Total MPU switches: ");
+    //uart_printf("%lu\n", mpu_switch_count);
 }
