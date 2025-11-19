@@ -559,6 +559,11 @@ void xPortPendSVHandler( void )
         "   .ltorg                              \n"
         ::"i" ( configMAX_SYSCALL_INTERRUPT_PRIORITY )
     );
+	/* Dynamic MPU: Switch memory view after context switch */
+    #if defined(CONFIG_DYNAMIC)
+        extern void *pxCurrentTCB;
+        mpu_dynamic_switch_task(pxCurrentTCB);
+    #endif
 }
 /*-----------------------------------------------------------*/
 
