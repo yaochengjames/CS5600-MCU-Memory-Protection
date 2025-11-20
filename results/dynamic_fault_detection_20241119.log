@@ -1,0 +1,72 @@
+qemu-system-arm -M mps2-an386 -kernel build/freertos_dynamic.elf -serial stdio -monitor none -nographic
+
+=====================================
+  Dynamic MPU Configuration         
+=====================================
+CPU: ARM Cortex-M4 @ 50MHz
+RTOS: FreeRTOS
+Platform: QEMU MPS2-AN386
+=====================================
+
+[MPU] Initializing Dynamic MPU...
+[MPU] Per-task memory isolation enabled
+[MPU] TaskA regions: 3 (32KB Flash + 512KB SRAM + 4KB UART)
+[MPU] TaskB regions: 3 (16KB Flash + 512KB SRAM + 4KB UART)
+[MPU] MPU will switch on every context switch
+
+[MPU] Dynamic Configuration Summary:
+  TaskA: 32KB Flash + 512KB SRAM + 4KB UART = ~548 KB
+  TaskB: 16KB Flash + 512KB SRAM + 4KB UART = ~532 KB
+  Memory reduction: ~78% per task (vs 2.5 MB baseline)
+
+Starting scheduler...
+(MPU will reconfigure on every context switch)
+
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 500, Avg: 730 cycles
+[Dynamic] Switches: 1000, Avg: 715 cycles
+[Dynamic] Switches: 1500, Avg: 703 cycles
+[Dynamic] Switches: 1500, Avg: 703 cycles
+[Dynamic] Switches: 1500, Avg: 703 cycles
+[Dynamic] Switches: 1500, Avg: 703 cycles
+[Dynamic] Switches: 1500, Avg: 703 cycles
+[Dynamic] Switches: 1500, Avg: 703 cycles
+[Dynamic] Switches: 2000, Avg: 692 cycles
+[Dynamic] Switches: 2500, Avg: 688 cycles
+[Dynamic] Switches: 3000, Avg: 685 cycles
+
+=== Performance Statistics ===
+Configuration: Dynamic
+Total switches: 3000
+Average cycles: 685
+Min cycles: 24
+Max cycles: 1400
+Range: 1376 cycles
+At 50MHz: ~13 us per switch
+
+[DEBUG] MPU reconfigurations: 5610
+[OK] MPU switching is active (100%%)
+==============================
+
+=== Dynamic measurement complete ===
+
+========================================
+  Task Isolation Test (Dynamic MPU)    
+========================================
+[TEST] Verifying per-task memory isolation
+
+[TEST 1] Write to unmapped region (0x60000000)
+[TEST 1] Expected: Fault (outside any task's view)
+[TEST 1] Executing...
