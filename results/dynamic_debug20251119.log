@@ -1,0 +1,53 @@
+qemu-system-arm -M mps2-an386 -kernel build/freertos_dynamic.elf -serial stdio -monitor none -nographic
+
+=====================================
+  Dynamic MPU Configuration         
+=====================================
+CPU: ARM Cortex-M4 @ 50MHz
+RTOS: FreeRTOS
+Platform: QEMU MPS2-AN386
+=====================================
+
+[MPU] Initializing Dynamic MPU...
+[MPU] Per-task memory isolation enabled
+[MPU] TaskA regions: 3 (32KB Flash + 512KB SRAM + 4KB UART)
+[MPU] TaskB regions: 3 (16KB Flash + 512KB SRAM + 4KB UART)
+[MPU] MPU will switch on every context switch
+
+[MPU] Dynamic Configuration Summary:
+  TaskA: 32KB Flash + 512KB SRAM + 4KB UART = ~548 KB
+  TaskB: 16KB Flash + 512KB SRAM + 4KB UART = ~532 KB
+  Memory reduction: ~78% per task (vs 2.5 MB baseline)
+
+Starting scheduler...
+(MPU will reconfigure on every context switch)
+
+[Dynamic] Switches: 500, Avg: 53 cycles
+[Dynamic] Switches: 500, Avg: 53 cycles
+[Dynamic] Switches: 500, Avg: 53 cycles
+[Dynamic] Switches: 500, Avg: 53 cycles
+[Dynamic] Switches: 500, Avg: 53 cycles
+[Dynamic] Switches: 500, Avg: 53 cycles
+[Dynamic] Switches: 500, Avg: 53 cycles
+[Dynamic] Switches: 500, Avg: 53 cycles
+[Dynamic] Switches: 1000, Avg: 75 cycles
+[Dynamic] Switches: 1500, Avg: 81 cycles
+[Dynamic] Switches: 2000, Avg: 84 cycles
+[Dynamic] Switches: 2500, Avg: 86 cycles
+[Dynamic] Switches: 3000, Avg: 88 cycles
+
+=== Performance Statistics ===
+Configuration: Dynamic
+Total switches: 3000
+Average cycles: 88
+Min cycles: 24
+Max cycles: 200
+Range: 176 cycles
+At 50MHz: ~1 us per switch
+
+[DEBUG] MPU reconfigurations: 0
+[WARNING] MPU switching NOT working!
+[WARNING] mpu_dynamic_switch_task() was never called
+==============================
+
+=== Dynamic measurement complete ===
