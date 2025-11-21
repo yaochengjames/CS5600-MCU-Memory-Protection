@@ -136,7 +136,7 @@ Dynamic MPU provides:
 Static MPU provides:
   ✅ Fault detection (basic protection)
   ✅ 9.6% overhead (minimal impact)
-  ❌ 0% memory reduction (no isolation)
+  ❌ Memeory isolation coarse-grained
 ```
 
 ### Hardware Constraints
