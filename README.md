@@ -1,7 +1,6 @@
 # Efficient Memory Isolation Strategies for Real-Time Embedded Systems
 
 
----
 
 ## Project Overview
 
@@ -177,20 +176,20 @@ Static MPU provides:
 
 ## References
 
-[1] P. Mackensen, C. Niesler, R. Blanco, L. Davi, and V. Moonsamy, “KINTSUGI: Secure Hotpatching for Code-
+- [1] P. Mackensen, C. Niesler, R. Blanco, L. Davi, and V. Moonsamy, “KINTSUGI: Secure Hotpatching for Code-
 Shadowing Real-Time Embedded Systems,” Proc. 34th USENIX Security Symp., USENIX, 2025. Available:
 https://www.usenix.org/conference/usenixsecurity25/presentation/mackensen
-[2] C. H. Kim, T. Kim, H. Choi, Z. Gu, B. Lee, X. Zhang, and D. Xu, “Securing Real-Time Microcontroller Systems
+- [2] C. H. Kim, T. Kim, H. Choi, Z. Gu, B. Lee, X. Zhang, and D. Xu, “Securing Real-Time Microcontroller Systems
 through Customized Memory View Switching,” Proc. NDSS 2018, Internet Society, 2018. Available: https://www.ndss-
 symposium.org/wp-content/uploads/2018/02/ndss2018_04B-2_Kim_paper.pdf
-[3] R. Pan, G. Peach, Y. Ren, and G. Parmer, “Predictable Virtualization on Memory Protection Unit-Based
+- [3] R. Pan, G. Peach, Y. Ren, and G. Parmer, “Predictable Virtualization on Memory Protection Unit-Based
 Microcontrollers,” Proc. IEEE RTAS 2018. Available: https://www2.seas.gwu.edu/~gparmer/publications/rtas18mpu.pdf
-[4] W. Zhou, Z. Jiang, and L. Guan, “Understanding MPU Usage in Microcontroller-based Systems in the Wild,” NDSS
+- [4] W. Zhou, Z. Jiang, and L. Guan, “Understanding MPU Usage in Microcontroller-based Systems in the Wild,” NDSS
 BAR Workshop 2023, Internet Society, 2023. Available: https://www.ndss-symposium.org/ndss-paper/auto-draft-395/
-[5] ARM Ltd., ARM Cortex-M Architecture Reference Manual – Memory Protection Unit (MPU) Chapter, ARM
+- [5] ARM Ltd., ARM Cortex-M Architecture Reference Manual – Memory Protection Unit (MPU) Chapter, ARM
 Technical Documentation. Available: https://developer.arm.com/documentation/107565/0101/Memory-
 protection/Memory-Protection-Unit
-[6] FreeRTOS Documentation, “Memory Protection Unit (MPU) Support,” FreeRTOS.org. Available:
+- [6] FreeRTOS Documentation, “Memory Protection Unit (MPU) Support,” FreeRTOS.org. Available:
 https://www.freertos.org/Security/04-FreeRTOS-MPU-memory-protection-unit
 
 ---
