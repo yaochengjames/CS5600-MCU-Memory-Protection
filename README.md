@@ -11,7 +11,7 @@ This project compares three Memory Protection Unit (MPU) strategies on FreeRTOS 
 **Key findings:**
 - **Baseline**: 83 cycles, 2.5 MB accessible, 0% isolation
 - **Static MPU**: 91 cycles (+9.6%), 2.5 MB accessible, coarse-grained protection
-- **Dynamic MPU**: 669 cycles (+706%), ~540 KB accessible, **78% memory reduction**
+- **Dynamic MPU**: 685 cycles (+725%), ~540 KB accessible, **78% memory reduction**
 
 ---
 
@@ -82,6 +82,39 @@ make
 make run
 ```
 
+### GDB Debugging
+
+To debug with GDB (useful for verifying MPU register configurations):
+
+#### Terminal 1: Start QEMU with GDB server
+```bash
+cd baseline_and_static
+make CONFIG=static debug
+# or for baseline:
+make CONFIG=baseline debug
+```
+
+For dynamic_mpu:
+```bash
+cd dynamic_mpu
+make debug
+```
+This starts QEMU with `-s -S` flags (GDB server on port 1234, paused at startup).
+
+#### Terminal 2: Connect GDB
+```bash
+cd baseline_and_static
+make CONFIG=static gdb
+# or for baseline:
+make CONFIG=baseline gdb
+```
+
+For dynamic_mpu:
+```bash
+cd dynamic_mpu
+make gdb
+````
+
 ---
 
 ## Experimental Results
@@ -90,9 +123,9 @@ make run
 
 | Configuration | Average Cycles | Min | Max | Overhead |
 |--------------|---------------|-----|-----|----------|
-| Baseline | 83 | 100 | 1,750 | - |
+| Baseline | 83 | 24 | 1,750 | - |
 | Static MPU | 91 | 24 | 150 | **+9.6%** |
-| Dynamic MPU | 669 | 24 | 6,450 | **+706%** |
+| Dynamic MPU | 685 | 24 | 1,400 | **+725%** |
 
 **Measurement:** 3,000 samples using `taskYIELD()` and SysTick timer
 
@@ -131,7 +164,7 @@ make run
 Dynamic MPU provides:
   ✅ Fault detection (strong protection)  
   ✅ 78% memory reduction (strong isolation)
-  ❌ 706% performance overhead (7x slower)
+  ❌ 725% performance overhead (7x slower)
 
 Static MPU provides:
   ✅ Fault detection (basic protection)
@@ -176,18 +209,18 @@ Static MPU provides:
 
 ## References
 
-- [1] P. Mackensen, C. Niesler, R. Blanco, L. Davi, and V. Moonsamy, “KINTSUGI: Secure Hotpatching for Code-
-Shadowing Real-Time Embedded Systems,” Proc. 34th USENIX Security Symp., USENIX, 2025. Available:
+- [1] P. Mackensen, C. Niesler, R. Blanco, L. Davi, and V. Moonsamy, "KINTSUGI: Secure Hotpatching for Code-
+Shadowing Real-Time Embedded Systems," Proc. 34th USENIX Security Symp., USENIX, 2025. Available:
 https://www.usenix.org/conference/usenixsecurity25/presentation/mackensen
-- [2] C. H. Kim, T. Kim, H. Choi, Z. Gu, B. Lee, X. Zhang, and D. Xu, “Securing Real-Time Microcontroller Systems
-through Customized Memory View Switching,” Proc. NDSS 2018, Internet Society, 2018. Available: https://www.ndss-symposium.org/wp-content/uploads/2018/02/ndss2018_04B-2_Kim_paper.pdf
-- [3] R. Pan, G. Peach, Y. Ren, and G. Parmer, “Predictable Virtualization on Memory Protection Unit-Based
-Microcontrollers,” Proc. IEEE RTAS 2018. Available: https://www2.seas.gwu.edu/~gparmer/publications/rtas18mpu.pdf
-- [4] W. Zhou, Z. Jiang, and L. Guan, “Understanding MPU Usage in Microcontroller-based Systems in the Wild,” NDSS
+- [2] C. H. Kim, T. Kim, H. Choi, Z. Gu, B. Lee, X. Zhang, and D. Xu, "Securing Real-Time Microcontroller Systems
+through Customized Memory View Switching," Proc. NDSS 2018, Internet Society, 2018. Available: https://www.ndss-symposium.org/wp-content/uploads/2018/02/ndss2018_04B-2_Kim_paper.pdf
+- [3] R. Pan, G. Peach, Y. Ren, and G. Parmer, "Predictable Virtualization on Memory Protection Unit-Based
+Microcontrollers," Proc. IEEE RTAS 2018. Available: https://www2.seas.gwu.edu/~gparmer/publications/rtas18mpu.pdf
+- [4] W. Zhou, Z. Jiang, and L. Guan, "Understanding MPU Usage in Microcontroller-based Systems in the Wild," NDSS
 BAR Workshop 2023, Internet Society, 2023. Available: https://www.ndss-symposium.org/ndss-paper/auto-draft-395/
 - [5] ARM Ltd., ARM Cortex-M Architecture Reference Manual – Memory Protection Unit (MPU) Chapter, ARM
 Technical Documentation. Available: https://developer.arm.com/documentation/107565/0101/Memory-protection/Memory-Protection-Unit
-- [6] FreeRTOS Documentation, “Memory Protection Unit (MPU) Support,” FreeRTOS.org. Available:
+- [6] FreeRTOS Documentation, "Memory Protection Unit (MPU) Support," FreeRTOS.org. Available:
 https://www.freertos.org/Security/04-FreeRTOS-MPU-memory-protection-unit
 
 ---
